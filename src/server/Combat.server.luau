@@ -1,0 +1,3 @@
+-- OBSOLETE (2026-11-19 restructure). Safe to delete this file.
+-- Replaced by: src/server/Main.server.luau + src/server/Services/*
+-- Original kept in _backup/2026-11-19-before-restructure/src/server/Combat.server.luau

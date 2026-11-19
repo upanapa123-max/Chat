@@ -1,0 +1,19 @@
+{
+  "name": "Last Shift",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "LastShift": {"$path":"src/shared"}
+    },
+    "ServerScriptService": {
+      "LastShift": {"$path":"src/server"}
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "LastShift": {"$path":"src/client"}
+      }
+    },
+    "Workspace": {"$path":"src/range/Workspace.project.json"},
+    "Lighting": {"$className":"Lighting","$properties":{"Ambient":[0.45098039215686275,0.47843137254901963,0.5137254901960784],"Brightness":1.5,"ClockTime":0,"OutdoorAmbient":[0.45098039215686275,0.47843137254901963,0.5137254901960784]}}
+  }
+}

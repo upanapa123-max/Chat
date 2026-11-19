@@ -1,0 +1,141 @@
+{
+  "name": "Workspace",
+  "tree": {
+    "$className": "Workspace",
+    "Camera": {"$className":"Camera","$properties":{"CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[0,6,12]}},"FieldOfView":74,"Focus":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[0,5,-48]}}}},
+    "LastShiftRange": {
+      "$className": "Folder",
+      "Ceiling": {"$className":"Part","$properties":{"Anchored":true,"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[0,14,-72]}},"Color":[0.17254901960784313,0.2,0.21568627450980393],"Material":"Concrete","Size":[76,1,177],"TopSurface":"Smooth"}},
+      "End wall": {"$className":"Part","$properties":{"Anchored":true,"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[0,7,16]}},"Color":[0.17254901960784313,0.2,0.21568627450980393],"Material":"Concrete","Size":[76,14,1],"TopSurface":"Smooth"}},
+      "End wall 2": {"$className":"Part","$properties":{"Anchored":true,"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[0,7,-160]}},"Color":[0.17254901960784313,0.2,0.21568627450980393],"Material":"Concrete","Size":[76,14,1],"TopSurface":"Smooth"}},
+      "Firing line": {"$className":"Part","$properties":{"Anchored":true,"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[0,0.016,-5]}},"CanCollide":false,"Color":[0.9411764705882353,0.7019607843137254,0.3411764705882353],"Material":"SmoothPlastic","Size":[62,0.03,0.45],"TopSurface":"Smooth"}},
+      "Firing line spawn": {"$className":"SpawnLocation","$properties":{"Anchored":true,"CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[0,0.1,4]}},"Duration":0,"Neutral":true,"Size":[8,0.2,5],"Transparency":1}},
+      "Floor": {"$className":"Part","$properties":{"Anchored":true,"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[0,-0.5,-72]}},"Color":[0.17254901960784313,0.2,0.21568627450980393],"Material":"Concrete","Size":[76,1,177],"TopSurface":"Smooth"}},
+      "Lane line": {"$className":"Part","$properties":{"Anchored":true,"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[-31,0.014,-78]}},"CanCollide":false,"Color":[0.9411764705882353,0.7019607843137254,0.3411764705882353],"Material":"SmoothPlastic","Size":[0.12,0.025,147],"TopSurface":"Smooth"}},
+      "Lane line 2": {"$className":"Part","$properties":{"Anchored":true,"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[-14,0.014,-78]}},"CanCollide":false,"Color":[0.9411764705882353,0.7019607843137254,0.3411764705882353],"Material":"SmoothPlastic","Size":[0.12,0.025,147],"TopSurface":"Smooth"}},
+      "Lane line 3": {"$className":"Part","$properties":{"Anchored":true,"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[0,0.014,-78]}},"CanCollide":false,"Color":[0.9411764705882353,0.7019607843137254,0.3411764705882353],"Material":"SmoothPlastic","Size":[0.12,0.025,147],"TopSurface":"Smooth"}},
+      "Lane line 4": {"$className":"Part","$properties":{"Anchored":true,"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[14,0.014,-78]}},"CanCollide":false,"Color":[0.9411764705882353,0.7019607843137254,0.3411764705882353],"Material":"SmoothPlastic","Size":[0.12,0.025,147],"TopSurface":"Smooth"}},
+      "Lane line 5": {"$className":"Part","$properties":{"Anchored":true,"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[31,0.014,-78]}},"CanCollide":false,"Color":[0.9411764705882353,0.7019607843137254,0.3411764705882353],"Material":"SmoothPlastic","Size":[0.12,0.025,147],"TopSurface":"Smooth"}},
+      "Overhead light": {
+        "$className": "Part",
+        "$properties": {"Anchored":true,"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[0,13.4,3]}},"Color":[0.8392156862745098,0.9019607843137255,0.9490196078431372],"Material":"Neon","Size":[30,0.2,1],"TopSurface":"Smooth"},
+        "SurfaceLight": {"$className":"SurfaceLight","$properties":{"Angle":120,"Brightness":2,"Face":"Bottom","Range":36}}
+      },
+      "Overhead light 2": {
+        "$className": "Part",
+        "$properties": {"Anchored":true,"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[0,13.4,-27]}},"Color":[0.8392156862745098,0.9019607843137255,0.9490196078431372],"Material":"Neon","Size":[30,0.2,1],"TopSurface":"Smooth"},
+        "SurfaceLight": {"$className":"SurfaceLight","$properties":{"Angle":120,"Brightness":2,"Face":"Bottom","Range":36}}
+      },
+      "Overhead light 3": {
+        "$className": "Part",
+        "$properties": {"Anchored":true,"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[0,13.4,-57]}},"Color":[0.8392156862745098,0.9019607843137255,0.9490196078431372],"Material":"Neon","Size":[30,0.2,1],"TopSurface":"Smooth"},
+        "SurfaceLight": {"$className":"SurfaceLight","$properties":{"Angle":120,"Brightness":2,"Face":"Bottom","Range":36}}
+      },
+      "Overhead light 4": {
+        "$className": "Part",
+        "$properties": {"Anchored":true,"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[0,13.4,-87]}},"Color":[0.8392156862745098,0.9019607843137255,0.9490196078431372],"Material":"Neon","Size":[30,0.2,1],"TopSurface":"Smooth"},
+        "SurfaceLight": {"$className":"SurfaceLight","$properties":{"Angle":120,"Brightness":2,"Face":"Bottom","Range":36}}
+      },
+      "Overhead light 5": {
+        "$className": "Part",
+        "$properties": {"Anchored":true,"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[0,13.4,-117]}},"Color":[0.8392156862745098,0.9019607843137255,0.9490196078431372],"Material":"Neon","Size":[30,0.2,1],"TopSurface":"Smooth"},
+        "SurfaceLight": {"$className":"SurfaceLight","$properties":{"Angle":120,"Brightness":2,"Face":"Bottom","Range":36}}
+      },
+      "Overhead light 6": {
+        "$className": "Part",
+        "$properties": {"Anchored":true,"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[0,13.4,-147]}},"Color":[0.8392156862745098,0.9019607843137255,0.9490196078431372],"Material":"Neon","Size":[30,0.2,1],"TopSurface":"Smooth"},
+        "SurfaceLight": {"$className":"SurfaceLight","$properties":{"Angle":120,"Brightness":2,"Face":"Bottom","Range":36}}
+      },
+      "Side wall": {"$className":"Part","$properties":{"Anchored":true,"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[-38,7,-72]}},"Color":[0.17254901960784313,0.2,0.21568627450980393],"Material":"Concrete","Size":[1,14,177],"TopSurface":"Smooth"}},
+      "Side wall 2": {"$className":"Part","$properties":{"Anchored":true,"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[38,7,-72]}},"Color":[0.17254901960784313,0.2,0.21568627450980393],"Material":"Concrete","Size":[1,14,177],"TopSurface":"Smooth"}},
+      "Sign": {
+        "$className": "Part",
+        "$properties": {"Anchored":true,"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[0,10,-28]}},"Color":[0.17254901960784313,0.2,0.21568627450980393],"Material":"SmoothPlastic","Size":[31,1.35,0.15],"TopSurface":"Smooth"},
+        "SurfaceGui": {
+          "$className": "SurfaceGui",
+          "$properties": {"Face":"Back","LightInfluence":0,"AlwaysOnTop":true},
+          "TextLabel": {"$className":"TextLabel","$properties":{"BackgroundTransparency":1,"Font":"GothamBold","Size":{"UDim2":[[1,0],[1,0]]},"Text":"LAST SHIFT   /   TRAINING RANGE","TextColor3":[0.9411764705882353,0.7019607843137254,0.3411764705882353],"TextScaled":true}}
+        }
+      },
+      "Targets": {
+        "$className": "Folder",
+        "01   UNARMORED": {
+          "$className": "Model",
+          "$properties": {"Attributes":{"BodyArmor":{"String":""},"Health":{"Float64":100},"Helmet":{"String":""},"MaxHealth":{"Float64":100}}},
+          "Arms": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Arms"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[-13.35,3.23,-35]}},"CanCollide":false,"Color":[0.6823529411764706,0.6431372549019608,0.5607843137254902],"Material":"SmoothPlastic","Size":[0.65,2.05,0.7],"TopSurface":"Smooth"}},
+          "Arms 2": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Arms"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[-10.65,3.23,-35]}},"CanCollide":false,"Color":[0.6823529411764706,0.6431372549019608,0.5607843137254902],"Material":"SmoothPlastic","Size":[0.65,2.05,0.7],"TopSurface":"Smooth"}},
+          "Head": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Head"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[-12,5,-35]}},"CanCollide":false,"Color":[0.6823529411764706,0.6431372549019608,0.5607843137254902],"Material":"SmoothPlastic","Size":[1.25,1.25,0.9],"TopSurface":"Smooth"}},
+          "Legs": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Legs"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[-12.5,1.1,-35]}},"CanCollide":false,"Color":[0.6823529411764706,0.6431372549019608,0.5607843137254902],"Material":"SmoothPlastic","Size":[0.82,2.1,0.72],"TopSurface":"Smooth"}},
+          "Legs 2": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Legs"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[-11.5,1.1,-35]}},"CanCollide":false,"Color":[0.6823529411764706,0.6431372549019608,0.5607843137254902],"Material":"SmoothPlastic","Size":[0.82,2.1,0.72],"TopSurface":"Smooth"}},
+          "Torso": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Torso"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[-12,3.24,-35]}},"CanCollide":false,"Color":[0.6823529411764706,0.6431372549019608,0.5607843137254902],"Material":"SmoothPlastic","Size":[1.9,2.15,0.8],"TopSurface":"Smooth"}}
+        },
+        "02   LIGHT ARMOR": {
+          "$className": "Model",
+          "$properties": {"Attributes":{"BodyArmor":{"String":"SoftVest"},"Health":{"Float64":100},"Helmet":{"String":"LightHelmet"},"MaxHealth":{"Float64":100}}},
+          "Arms": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Arms"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[-1.35,3.23,-49]}},"CanCollide":false,"Color":[0.6823529411764706,0.6431372549019608,0.5607843137254902],"Material":"SmoothPlastic","Size":[0.65,2.05,0.7],"TopSurface":"Smooth"}},
+          "Arms 2": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Arms"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[1.35,3.23,-49]}},"CanCollide":false,"Color":[0.6823529411764706,0.6431372549019608,0.5607843137254902],"Material":"SmoothPlastic","Size":[0.65,2.05,0.7],"TopSurface":"Smooth"}},
+          "Head": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Head"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[0,5,-49]}},"CanCollide":false,"Color":[0.40784313725490196,0.49411764705882355,0.592156862745098],"Material":"SmoothPlastic","Size":[1.25,1.25,0.9],"TopSurface":"Smooth"}},
+          "Legs": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Legs"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[-0.5,1.1,-49]}},"CanCollide":false,"Color":[0.6823529411764706,0.6431372549019608,0.5607843137254902],"Material":"SmoothPlastic","Size":[0.82,2.1,0.72],"TopSurface":"Smooth"}},
+          "Legs 2": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Legs"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[0.5,1.1,-49]}},"CanCollide":false,"Color":[0.6823529411764706,0.6431372549019608,0.5607843137254902],"Material":"SmoothPlastic","Size":[0.82,2.1,0.72],"TopSurface":"Smooth"}},
+          "Torso": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Torso"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[0,3.24,-49]}},"CanCollide":false,"Color":[0.40784313725490196,0.49411764705882355,0.592156862745098],"Material":"SmoothPlastic","Size":[1.9,2.15,0.8],"TopSurface":"Smooth"}}
+        },
+        "03   HEAVY ARMOR": {
+          "$className": "Model",
+          "$properties": {"Attributes":{"BodyArmor":{"String":"PlateCarrier"},"Health":{"Float64":100},"Helmet":{"String":"HeavyHelmet"},"MaxHealth":{"Float64":100}}},
+          "Arms": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Arms"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[11.65,3.23,-65]}},"CanCollide":false,"Color":[0.6823529411764706,0.6431372549019608,0.5607843137254902],"Material":"SmoothPlastic","Size":[0.65,2.05,0.7],"TopSurface":"Smooth"}},
+          "Arms 2": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Arms"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[14.35,3.23,-65]}},"CanCollide":false,"Color":[0.6823529411764706,0.6431372549019608,0.5607843137254902],"Material":"SmoothPlastic","Size":[0.65,2.05,0.7],"TopSurface":"Smooth"}},
+          "Head": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Head"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[13,5,-65]}},"CanCollide":false,"Color":[0.40784313725490196,0.49411764705882355,0.592156862745098],"Material":"SmoothPlastic","Size":[1.25,1.25,0.9],"TopSurface":"Smooth"}},
+          "Legs": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Legs"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[12.5,1.1,-65]}},"CanCollide":false,"Color":[0.6823529411764706,0.6431372549019608,0.5607843137254902],"Material":"SmoothPlastic","Size":[0.82,2.1,0.72],"TopSurface":"Smooth"}},
+          "Legs 2": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Legs"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[13.5,1.1,-65]}},"CanCollide":false,"Color":[0.6823529411764706,0.6431372549019608,0.5607843137254902],"Material":"SmoothPlastic","Size":[0.82,2.1,0.72],"TopSurface":"Smooth"}},
+          "Torso": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Torso"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[13,3.24,-65]}},"CanCollide":false,"Color":[0.40784313725490196,0.49411764705882355,0.592156862745098],"Material":"SmoothPlastic","Size":[1.9,2.15,0.8],"TopSurface":"Smooth"}}
+        },
+        "04   DISTANCE": {
+          "$className": "Model",
+          "$properties": {"Attributes":{"BodyArmor":{"String":""},"Health":{"Float64":100},"Helmet":{"String":""},"MaxHealth":{"Float64":100}}},
+          "Arms": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Arms"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[-16.35,3.23,-112]}},"CanCollide":false,"Color":[0.6823529411764706,0.6431372549019608,0.5607843137254902],"Material":"SmoothPlastic","Size":[0.65,2.05,0.7],"TopSurface":"Smooth"}},
+          "Arms 2": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Arms"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[-13.65,3.23,-112]}},"CanCollide":false,"Color":[0.6823529411764706,0.6431372549019608,0.5607843137254902],"Material":"SmoothPlastic","Size":[0.65,2.05,0.7],"TopSurface":"Smooth"}},
+          "Head": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Head"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[-15,5,-112]}},"CanCollide":false,"Color":[0.6823529411764706,0.6431372549019608,0.5607843137254902],"Material":"SmoothPlastic","Size":[1.25,1.25,0.9],"TopSurface":"Smooth"}},
+          "Legs": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Legs"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[-15.5,1.1,-112]}},"CanCollide":false,"Color":[0.6823529411764706,0.6431372549019608,0.5607843137254902],"Material":"SmoothPlastic","Size":[0.82,2.1,0.72],"TopSurface":"Smooth"}},
+          "Legs 2": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Legs"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[-14.5,1.1,-112]}},"CanCollide":false,"Color":[0.6823529411764706,0.6431372549019608,0.5607843137254902],"Material":"SmoothPlastic","Size":[0.82,2.1,0.72],"TopSurface":"Smooth"}},
+          "Torso": {"$className":"Part","$properties":{"Anchored":true,"Attributes":{"Zone":{"String":"Torso"}},"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[-15,3.24,-112]}},"CanCollide":false,"Color":[0.6823529411764706,0.6431372549019608,0.5607843137254902],"Material":"SmoothPlastic","Size":[1.9,2.15,0.8],"TopSurface":"Smooth"}}
+        },
+        "Sign": {
+          "$className": "Part",
+          "$properties": {"Anchored":true,"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[-12,7,-35]}},"Color":[0.17254901960784313,0.2,0.21568627450980393],"Material":"SmoothPlastic","Size":[11,1.35,0.15],"TopSurface":"Smooth"},
+          "SurfaceGui": {
+            "$className": "SurfaceGui",
+            "$properties": {"Face":"Back","LightInfluence":0,"AlwaysOnTop":true},
+            "TextLabel": {"$className":"TextLabel","$properties":{"BackgroundTransparency":1,"Font":"GothamBold","Size":{"UDim2":[[1,0],[1,0]]},"Text":"01   UNARMORED","TextColor3":[0.9411764705882353,0.7019607843137254,0.3411764705882353],"TextScaled":true}}
+          }
+        },
+        "Sign 2": {
+          "$className": "Part",
+          "$properties": {"Anchored":true,"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[0,7,-49]}},"Color":[0.17254901960784313,0.2,0.21568627450980393],"Material":"SmoothPlastic","Size":[11,1.35,0.15],"TopSurface":"Smooth"},
+          "SurfaceGui": {
+            "$className": "SurfaceGui",
+            "$properties": {"Face":"Back","LightInfluence":0,"AlwaysOnTop":true},
+            "TextLabel": {"$className":"TextLabel","$properties":{"BackgroundTransparency":1,"Font":"GothamBold","Size":{"UDim2":[[1,0],[1,0]]},"Text":"02   LIGHT ARMOR","TextColor3":[0.9411764705882353,0.7019607843137254,0.3411764705882353],"TextScaled":true}}
+          }
+        },
+        "Sign 3": {
+          "$className": "Part",
+          "$properties": {"Anchored":true,"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[13,7,-65]}},"Color":[0.17254901960784313,0.2,0.21568627450980393],"Material":"SmoothPlastic","Size":[11,1.35,0.15],"TopSurface":"Smooth"},
+          "SurfaceGui": {
+            "$className": "SurfaceGui",
+            "$properties": {"Face":"Back","LightInfluence":0,"AlwaysOnTop":true},
+            "TextLabel": {"$className":"TextLabel","$properties":{"BackgroundTransparency":1,"Font":"GothamBold","Size":{"UDim2":[[1,0],[1,0]]},"Text":"03   HEAVY ARMOR","TextColor3":[0.9411764705882353,0.7019607843137254,0.3411764705882353],"TextScaled":true}}
+          }
+        },
+        "Sign 4": {
+          "$className": "Part",
+          "$properties": {"Anchored":true,"BottomSurface":"Smooth","CFrame":{"CFrame":{"orientation":[[1,0,0],[0,1,0],[0,0,1]],"position":[-15,7,-112]}},"Color":[0.17254901960784313,0.2,0.21568627450980393],"Material":"SmoothPlastic","Size":[11,1.35,0.15],"TopSurface":"Smooth"},
+          "SurfaceGui": {
+            "$className": "SurfaceGui",
+            "$properties": {"Face":"Back","LightInfluence":0,"AlwaysOnTop":true},
+            "TextLabel": {"$className":"TextLabel","$properties":{"BackgroundTransparency":1,"Font":"GothamBold","Size":{"UDim2":[[1,0],[1,0]]},"Text":"04   DISTANCE","TextColor3":[0.9411764705882353,0.7019607843137254,0.3411764705882353],"TextScaled":true}}
+          }
+        }
+      }
+    }
+  }
+}

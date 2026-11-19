@@ -1,0 +1,3 @@
+-- OBSOLETE (2026-11-19 restructure). Safe to delete this file.
+-- Replaced by: src/client/Main.client.luau + src/client/Controllers/*
+-- Original kept in _backup/2026-11-19-before-restructure/src/client/Controller.client.luau

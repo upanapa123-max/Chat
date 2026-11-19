@@ -1,0 +1,8 @@
+# Local tool binaries (luau, rojo) - download per README
+tools-local/
+# Build outputs - rebuild with build.bat
+*.rbxl
+*.rbxlx
+*.rbxl.lock
+# Local pre-restructure backups
+_backup/
