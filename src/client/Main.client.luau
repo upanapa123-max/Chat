@@ -23,14 +23,19 @@ local CharacterController = require(controllers:WaitForChild("CharacterControlle
 local WeaponController = require(controllers:WaitForChild("WeaponController"))
 local Viewmodel = require(views:WaitForChild("Viewmodel"))
 local DebugHud = require(views:WaitForChild("DebugHud"))
+local SoundPlayer = require(views:WaitForChild("SoundPlayer"))
+local Effects = require(views:WaitForChild("Effects"))
 
 local remotes = Net.waitFor(shared)
 local weaponDef = Weapons[Loadout.startingWeapon]
 
+SoundPlayer.init()
+Effects.init()
+
 local character = CharacterController.new(remotes)
-local viewmodel = Viewmodel.new(weaponDef)
+local viewmodel = Viewmodel.new()
 local hud = DebugHud.new(player, weaponDef)
-local weapon = WeaponController.new(remotes, weaponDef, character, viewmodel, hud)
+local weapon = WeaponController.new(remotes, weaponDef, character, viewmodel, hud, Effects)
 
 player.CameraMode = Enum.CameraMode.LockFirstPerson
 UserInputService.MouseIconEnabled = false
@@ -59,6 +64,14 @@ remotes.ShotResult.OnClientEvent:Connect(function(result)
 	weapon:onShot(result)
 end)
 
+remotes.ShotFx.OnClientEvent:Connect(function(fx)
+	Effects.remoteShot(fx)
+end)
+
+remotes.MovementState.OnClientEvent:Connect(function(seq, stance)
+	character:onServerState(seq, stance)
+end)
+
 -- Input -----------------------------------------------------------------------
 
 UserInputService.InputBegan:Connect(function(input, processed)
@@ -67,31 +80,56 @@ UserInputService.InputBegan:Connect(function(input, processed)
 	end
 	local key = input.KeyCode
 	if input.UserInputType == Keybinds.fire then
-		weapon:tryFire()
+		weapon:setTrigger(true)
 	elseif input.UserInputType == Keybinds.aim then
 		character:setAiming(true)
 	elseif key == Keybinds.sprint then
 		character:setSprinting(true)
 	elseif key == Keybinds.crouch then
 		character:toggleCrouch()
+	elseif key == Keybinds.prone then
+		character:toggleProne()
 	elseif key == Keybinds.reload then
 		weapon:reload()
 	elseif Keybinds.ammoSlots[key] then
 		weapon:selectSlot(Keybinds.ammoSlots[key])
+	elseif key == Keybinds.nextWeapon then
+		weapon:cycleWeapon(1)
+	elseif key == Keybinds.fireMode then
+		weapon:cycleFireMode()
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(input, processed)
+	if processed or not character:isAlive() then
+		return
+	end
+	if input.UserInputType == Enum.UserInputType.MouseWheel and input.Position.Z ~= 0 then
+		weapon:cycleWeapon(if input.Position.Z > 0 then -1 else 1)
 	end
 end)
 
 -- Releases are handled even when a GUI ate the input, so ADS/sprint never get stuck.
 UserInputService.InputEnded:Connect(function(input)
-	if input.UserInputType == Keybinds.aim then
+	if input.UserInputType == Keybinds.fire then
+		weapon:setTrigger(false)
+	elseif input.UserInputType == Keybinds.aim then
 		character:setAiming(false)
 	elseif input.KeyCode == Keybinds.sprint then
 		character:setSprinting(false)
 	end
 end)
 
+-- Space while crouched / prone gets up one stance (jumping is disabled while low).
+UserInputService.JumpRequest:Connect(function()
+	if character:isAlive() then
+		character:onJumpRequest()
+	end
+end)
+
 UserInputService.WindowFocusReleased:Connect(function()
 	character:releaseHeldInputs()
+	weapon:setTrigger(false)
 end)
 
 -- Rendering -------------------------------------------------------------------

@@ -48,7 +48,6 @@ end
 function DebugHud.new(player: Player, def)
 	local self = setmetatable({}, DebugHud)
 	self.def = def
-	local caliber = Calibers[def.caliber]
 
 	local gui = Instance.new("ScreenGui")
 	gui.Name = "LastShiftDebug"
@@ -66,7 +65,7 @@ function DebugHud.new(player: Player, def)
 	panel.BorderSizePixel = 0
 	panel.Parent = gui
 
-	label(panel, "Weapon", 9, 22, 17, AMBER).Text = def.displayName .. SEP .. caliber.displayName
+	self.weapon = label(panel, "Weapon", 9, 22, 17, AMBER)
 	self.ammo = label(panel, "Ammo", 33, 20, 15, WHITE)
 	self.reserve = label(panel, "Reserve", 53, 18, 13, GRAY)
 	self.hit = label(panel, "Hit", 77, 19, 15, WHITE)
@@ -74,12 +73,10 @@ function DebugHud.new(player: Player, def)
 	self.target = label(panel, "Target", 116, 18, 13, GRAY)
 
 	label(panel, "Controls", 146, 16, 12, GRAY).Text =
-		"LMB Fire" .. SEP .. "RMB ADS" .. SEP .. "R Reload" .. SEP .. "Shift Sprint" .. SEP .. "C Crouch"
-	local keys = {}
-	for index, ammoId in caliber.ammo do
-		table.insert(keys, ("%d %s"):format(index, shortName(ammoId)))
-	end
-	label(panel, "AmmoKeys", 164, 16, 12, GRAY).Text = table.concat(keys, SEP) .. SEP .. "R loads the selected type"
+		"LMB Fire" .. SEP .. "RMB ADS" .. SEP .. "R Reload" .. SEP .. "Shift Sprint" .. SEP .. "C Crouch" .. SEP .. "X Prone"
+	self.ammoKeys = label(panel, "AmmoKeys", 164, 16, 12, GRAY)
+	self.fireMode = "Semi"
+	self:setWeapon(def)
 
 	local dot = Instance.new("Frame")
 	dot.Name = "Crosshair"
@@ -104,6 +101,30 @@ function DebugHud:reset()
 	self.target.Text = ""
 	self.dot.Visible = false
 	self.dot.BackgroundColor3 = WHITE
+end
+
+local function weaponTitle(def, fireMode: string): string
+	return def.displayName .. SEP .. Calibers[def.caliber].displayName .. SEP .. string.upper(fireMode)
+end
+
+-- Called when the equipped weapon changes (server-confirmed).
+function DebugHud:setWeapon(def)
+	self.def = def
+	self.weapon.Text = weaponTitle(def, self.fireMode)
+	local keys = {}
+	for index, ammoId in Calibers[def.caliber].ammo do
+		table.insert(keys, ("%d %s"):format(index, shortName(ammoId)))
+	end
+	local switch = "Q / wheel Switch weapon"
+	if #def.fireModes > 1 then
+		switch ..= SEP .. "B Fire mode"
+	end
+	self.ammoKeys.Text = table.concat(keys, SEP) .. SEP .. "R loads it" .. SEP .. switch
+end
+
+function DebugHud:setFireMode(mode: string)
+	self.fireMode = mode
+	self.weapon.Text = weaponTitle(self.def, mode)
 end
 
 function DebugHud:setCrosshairVisible(visible: boolean)

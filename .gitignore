@@ -1,8 +1,7 @@
-# Local tool binaries (luau, rojo) - download per README
-tools-local/
-# Build outputs - rebuild with build.bat
 *.rbxl
 *.rbxlx
+sourcemap.json
+/tools-local/
 *.rbxl.lock
-# Local pre-restructure backups
-_backup/
+/_backup/
+__pycache__/

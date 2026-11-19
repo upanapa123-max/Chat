@@ -4,11 +4,12 @@
 
 	The client sends only an aim direction. The server decides:
 	  - whether the shot is allowed (alive, not reloading, not sprinting, ammo, cadence)
-	  - where it starts (the character's Head, lowered when crouched)
+	  - where it starts (the eye for the current stance, from MovementService)
 	  - where it goes (aim + server-random spread)
 	  - what it hits and how much damage it does (TargetService / Combat.Damage)
 ]]
 
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 
@@ -22,6 +23,7 @@ local Loadout = require(data:WaitForChild("Loadout"))
 local Spread = require(shared:WaitForChild("Combat"):WaitForChild("Spread"))
 
 local PlayerSessions = require(script.Parent.PlayerSessions)
+local MovementService = require(script.Parent.MovementService)
 local TargetService = require(script.Parent.TargetService)
 
 -- Accept shots slightly faster than fireInterval so network jitter on legit clicks isn't rejected.
@@ -36,6 +38,8 @@ type WeaponState = {
 	magazine: number,
 	reserve: { [string]: number },
 	reloading: boolean,
+	reloadToken: number, -- bumped to cancel a pending reload (weapon switched away)
+	readyAt: number, -- os.clock() before which the weapon can't fire (equip time)
 	lastShot: number,
 }
 
@@ -61,8 +65,15 @@ local function newWeaponState(weaponId: string): WeaponState
 		magazine = def.magazineCapacity,
 		reserve = reserve,
 		reloading = false,
+		reloadToken = 0,
+		readyAt = 0,
 		lastShot = -math.huge,
 	}
+end
+
+local function setWorldWeapon(session: PlayerSessions.Session)
+	-- Read by OperatorService to show the gun on the character for everyone else.
+	session.character:SetAttribute("EquippedWeapon", session.weapon.def.id)
 end
 
 local function publish(session: PlayerSessions.Session)
@@ -83,7 +94,10 @@ local function fire(session: PlayerSessions.Session, aim: unknown)
 	local def = weapon.def
 	local now = os.clock()
 
-	if weapon.reloading or weapon.magazine <= 0 or session.movement == "Sprint" then
+	if weapon.reloading or weapon.magazine <= 0 or session.movement == "Sprint" or now < weapon.readyAt then
+		return
+	end
+	if not MovementService.canFire(session) then
 		return
 	end
 	if now - weapon.lastShot < def.fireInterval * CADENCE_TOLERANCE then
@@ -93,25 +107,19 @@ local function fire(session: PlayerSessions.Session, aim: unknown)
 	if typeof(aim) ~= "Vector3" or not (math.abs(aim.Magnitude - 1) < AIM_UNIT_TOLERANCE) then
 		return
 	end
-	local head = session.character:FindFirstChild("Head")
-	if not head or not head:IsA("BasePart") then
+	local params = RaycastParams.new()
+	params.FilterType = Enum.RaycastFilterType.Exclude
+	params.FilterDescendantsInstances = { session.character }
+	-- So rays still hit prone bodies, whose parts don't collide with "Default".
+	params.CollisionGroup = MovementService.HITSCAN_GROUP
+
+	local origin = MovementService.shotOrigin(session, params)
+	if not origin then
 		return
 	end
 
 	weapon.lastShot = now
 	weapon.magazine -= 1
-
-	local params = RaycastParams.new()
-	params.FilterType = Enum.RaycastFilterType.Exclude
-	params.FilterDescendantsInstances = { session.character }
-
-	local origin = head.Position
-	if Movement.isCrouched(session.movement) then
-		local drop = Vector3.new(0, Movement.crouchCameraOffset, 0)
-		if not Workspace:Raycast(origin, drop, params) then
-			origin += drop
-		end
-	end
 
 	local spread = if Movement.isAiming(session.movement) then def.spread.ads else def.spread.hip
 	local direction = Spread.apply(aim, spread, random)
@@ -125,6 +133,8 @@ local function fire(session: PlayerSessions.Session, aim: unknown)
 		surface = "Miss",
 		ammoId = weapon.loaded,
 		distance = if hit then hit.Distance else def.maxRange,
+		normal = if hit then hit.Normal else nil,
+		impact = "Miss",
 	}
 	if hit then
 		local model, zone = TargetService.fromInstance(hit.Instance)
@@ -134,11 +144,28 @@ local function fire(session: PlayerSessions.Session, aim: unknown)
 				shot[key] = value
 			end
 			shot.surface = "Target"
+			shot.impact = if report.armor == "Stopped" then "Armor" else "Flesh"
 		else
 			shot.surface = "World"
+			shot.impact = "World"
 		end
 	end
 	remotes.ShotResult:FireClient(session.player, shot)
+
+	-- Everyone else hears and sees the shot. Cosmetic only: no damage data.
+	local fx = {
+		shooter = session.player,
+		weaponId = def.id,
+		origin = origin,
+		endpoint = endpoint,
+		normal = shot.normal,
+		impact = shot.impact,
+	}
+	for _, other in Players:GetPlayers() do
+		if other ~= session.player then
+			remotes.ShotFx:FireClient(other, fx)
+		end
+	end
 end
 
 local function reload(session: PlayerSessions.Session)
@@ -153,10 +180,12 @@ local function reload(session: PlayerSessions.Session)
 	end
 
 	weapon.reloading = true
+	weapon.reloadToken += 1
+	local token = weapon.reloadToken
 	publish(session)
 
 	task.delay(weapon.def.reloadTime, function()
-		if not PlayerSessions.isCurrent(session) or session.weapon ~= weapon then
+		if not PlayerSessions.isCurrent(session) or session.weapon ~= weapon or weapon.reloadToken ~= token then
 			return
 		end
 		-- Whole-magazine swap: leftover rounds go back to their own reserve.
@@ -180,6 +209,27 @@ local function selectAmmo(session: PlayerSessions.Session, ammoId: unknown)
 	end
 end
 
+local function equip(session: PlayerSessions.Session, slot: unknown)
+	if typeof(slot) ~= "number" or slot ~= slot or slot % 1 ~= 0 then
+		return
+	end
+	local weaponId = Loadout.weapons[slot]
+	local target = weaponId and session.weapons[weaponId]
+	local current: WeaponState = session.weapon
+	if not target or target == current then
+		return
+	end
+	-- Switching away abandons a reload in progress; the magazine is left as it was.
+	if current.reloading then
+		current.reloading = false
+		current.reloadToken += 1
+	end
+	target.readyAt = os.clock() + target.def.equipTime
+	session.weapon = target
+	setWorldWeapon(session)
+	publish(session)
+end
+
 -- Wraps a handler so it only runs for a gated session that has a weapon.
 local function armed(handler: (PlayerSessions.Session, ...any) -> ())
 	return function(player: Player, ...)
@@ -194,7 +244,14 @@ function WeaponService.init(remoteTable: { [string]: RemoteEvent })
 	remotes = remoteTable
 
 	PlayerSessions.onStarted(function(session)
-		session.weapon = newWeaponState(Loadout.startingWeapon)
+		-- Every loadout weapon keeps its own magazine and reserves for this life.
+		local weapons = {}
+		for _, weaponId in Loadout.weapons do
+			weapons[weaponId] = newWeaponState(weaponId)
+		end
+		session.weapons = weapons
+		session.weapon = weapons[Loadout.startingWeapon] or newWeaponState(Loadout.startingWeapon)
+		setWorldWeapon(session)
 		publish(session)
 	end)
 
@@ -202,6 +259,7 @@ function WeaponService.init(remoteTable: { [string]: RemoteEvent })
 	remotes.Reload.OnServerEvent:Connect(armed(reload))
 	remotes.SelectAmmo.OnServerEvent:Connect(armed(selectAmmo))
 	remotes.RequestSync.OnServerEvent:Connect(armed(publish))
+	remotes.EquipWeapon.OnServerEvent:Connect(armed(equip))
 end
 
 return WeaponService

@@ -204,20 +204,22 @@ def build_fs_node(path):
 def build_tree(project_path):
     project = json.load(open(project_path, encoding="utf-8"))
 
-    def walk(node):
+    # $path is relative to the project file that contains it (nested project files included).
+    def walk(node, base):
         out = {}
         if "$path" in node:
-            target = os.path.join(os.path.dirname(project_path), node["$path"])
+            target = os.path.join(base, node["$path"])
             if target.endswith(".project.json"):
-                out.update(walk(json.load(open(target, encoding="utf-8")).get("tree", {})))
+                nested = json.load(open(target, encoding="utf-8")).get("tree", {})
+                out.update(walk(nested, os.path.dirname(target)))
             else:
                 out.update(build_fs_node(target))
         for key, child in node.items():
-            if not key.startswith("$"):
-                out[key] = walk(child)
+            if not key.startswith("$") and isinstance(child, dict):
+                out[key] = walk(child, base)
         return out
 
-    return walk(project["tree"])
+    return walk(project["tree"], os.path.dirname(project_path))
 
 
 def find_file_node(tree, path, trail=()):

@@ -55,6 +55,23 @@ for id, def in Armor.definitions do
 	check("armor id matches key " .. id, def.id == id)
 	check("armor slot has attribute " .. id, Armor.slotAttribute[def.slot] ~= nil)
 end
+for slot, list in Armor.cycle do
+	check("armor cycle starts with none " .. slot, list[1] == "")
+	for i = 2, #list do
+		local def = Armor.definitions[list[i]]
+		check("armor cycle entry exists " .. list[i], def ~= nil and def.slot == slot)
+	end
+end
+for _, weaponId in Loadout.weapons do
+	check("loadout weapon exists " .. weaponId, Weapons[weaponId] ~= nil)
+end
+do
+	local WeaponSounds = require("../src/shared/Data/WeaponSounds")
+	for id, weapon in Weapons do
+		check("weapon has sound set " .. id, WeaponSounds.weapons[weapon.sounds] ~= nil)
+		check("weapon has fire modes " .. id, #weapon.fireModes >= 1)
+	end
+end
 
 for zone, slot in Zones.armorSlot do
 	check("armored zone has damage scale " .. zone, Zones.damageScale[zone] ~= nil)
@@ -64,11 +81,58 @@ end
 for mode in Movement.speed do
 	check("movement speed positive " .. mode, Movement.speed[mode] > 0)
 end
-check("mode walk", Movement.modeFor(false, false, false) == "Walk")
-check("mode sprint", Movement.modeFor(false, false, true) == "Sprint")
-check("mode aim beats sprint", Movement.modeFor(false, true, true) == "Aim")
-check("mode crouch beats sprint", Movement.modeFor(true, false, true) == "Crouch")
-check("mode crouch aim", Movement.modeFor(true, true, false) == "CrouchAim")
+check("mode walk", Movement.modeFor("Stand", false, false) == "Walk")
+check("mode sprint", Movement.modeFor("Stand", false, true) == "Sprint")
+check("mode aim beats sprint", Movement.modeFor("Stand", true, true) == "Aim")
+check("mode crouch beats sprint", Movement.modeFor("Crouch", false, true) == "Crouch")
+check("mode crouch aim", Movement.modeFor("Crouch", true, false) == "CrouchAim")
+check("mode prone beats sprint", Movement.modeFor("Prone", false, true) == "Prone")
+check("mode prone aim", Movement.modeFor("Prone", true, false) == "ProneAim")
+check("prone aim counts as aiming", Movement.isAiming("ProneAim"))
+
+-- Stances ---------------------------------------------------------------------
+
+local stanceNames = {}
+for name in Movement.stance do
+	table.insert(stanceNames, name)
+end
+for _, stance in stanceNames do
+	local def = Movement.stance[stance]
+	check("stance is valid " .. stance, Movement.isStance(stance))
+	check("stance modes have speeds " .. stance, Movement.speed[Movement.modeFor(stance, false, false)] ~= nil
+		and Movement.speed[Movement.modeFor(stance, true, false)] ~= nil)
+	check("stance scales in 0..1 " .. stance, def.hipScale > 0 and def.hipScale <= 1 and def.eyeScale > 0 and def.eyeScale <= 1)
+	for _, other in stanceNames do
+		if other ~= stance then
+			check(("transition time %s->%s"):format(stance, other), Movement.transitionTime(stance, other) > 0)
+			check(("rising is one-way %s->%s"):format(stance, other),
+				Movement.isRising(stance, other) ~= Movement.isRising(other, stance))
+		end
+	end
+end
+check("not a stance", not Movement.isStance("Fly") and not Movement.isStance(nil) and not Movement.isStance(3))
+check("stand is full height", Movement.stance.Stand.hipScale == 1 and Movement.stance.Stand.eyeScale == 1)
+check("lower stances are lower", Movement.stance.Prone.eyeScale < Movement.stance.Crouch.eyeScale
+	and Movement.stance.Crouch.eyeScale < 1)
+check("lower stances are slower", Movement.speed.Prone < Movement.speed.Crouch and Movement.speed.Crouch < Movement.speed.Walk)
+check("crouch to stand rises", Movement.isRising("Crouch", "Stand"))
+check("prone transitions block fire", Movement.blocksFire("Stand", "Prone") and Movement.blocksFire("Prone", "Crouch"))
+check("crouch transitions allow fire", not Movement.blocksFire("Stand", "Crouch") and not Movement.blocksFire("Crouch", "Stand"))
+check("transition speed is a cap", Movement.transitionSpeed < Movement.speed.Walk)
+
+-- Crouch leg pose: the leg shortens by `drop` and the foot stays under the hip.
+local function close(a: number, b: number): boolean
+	return math.abs(a - b) < 1e-6
+end
+for _, case in { { 1, 1, 1 }, { 1.2, 0.9, 0.7 }, { 0.8, 1.1, 0.3 } } do
+	local thigh, shin, drop = case[1], case[2], case[3]
+	local a, b = Movement.legAngles(thigh, shin, drop)
+	local name = ("leg angles %.1f/%.1f drop %.1f"):format(thigh, shin, drop)
+	check(name .. " height", close(thigh * math.cos(a) + shin * math.cos(b), thigh + shin - drop))
+	check(name .. " foot under hip", close(thigh * math.sin(a), shin * math.sin(b)))
+end
+local a0, b0 = Movement.legAngles(1, 1, 0)
+check("leg angles straight at no drop", close(a0, 0) and close(b0, 0))
 
 -- Damage rules ----------------------------------------------------------------
 

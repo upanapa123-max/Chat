@@ -17,6 +17,21 @@ local Calibers: { [string]: CaliberDef } = {
 		displayName = "5.56×45mm",
 		ammo = { "556_FMJ", "556_AP", "556_HP" },
 	},
+	["7.62x39"] = {
+		id = "7.62x39",
+		displayName = "7.62×39mm",
+		ammo = { "762_PS", "762_BP", "762_HP" },
+	},
+	[".50AE"] = {
+		id = ".50AE",
+		displayName = ".50 AE",
+		ammo = { "50AE_FMJ", "50AE_CS", "50AE_JHP" },
+	},
+	["4.6x30"] = {
+		id = "4.6x30",
+		displayName = "4.6×30mm",
+		ammo = { "46_FMJ", "46_AP", "46_SUB" },
+	},
 }
 
 for _, def in Calibers do

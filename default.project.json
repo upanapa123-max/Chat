@@ -3,17 +3,87 @@
   "tree": {
     "$className": "DataModel",
     "ReplicatedStorage": {
-      "LastShift": {"$path":"src/shared"}
+      "LastShift": {
+        "$path": "src/shared"
+      }
     },
     "ServerScriptService": {
-      "LastShift": {"$path":"src/server"}
+      "LastShift": {
+        "$path": "src/server"
+      }
     },
     "StarterPlayer": {
       "StarterPlayerScripts": {
-        "LastShift": {"$path":"src/client"}
+        "LastShift": {
+          "$path": "src/client"
+        }
       }
     },
-    "Workspace": {"$path":"src/range/Workspace.project.json"},
-    "Lighting": {"$className":"Lighting","$properties":{"Ambient":[0.45098039215686275,0.47843137254901963,0.5137254901960784],"Brightness":1.5,"ClockTime":0,"OutdoorAmbient":[0.45098039215686275,0.47843137254901963,0.5137254901960784]}}
+    "Workspace": {
+      "$path": "src/range/Workspace.project.json"
+    },
+    "Lighting": {
+      "$className": "Lighting",
+      "$properties": {
+        "Technology": "Future",
+        "Ambient": [
+          0.1725,
+          0.1804,
+          0.1882
+        ],
+        "OutdoorAmbient": [
+          0.1569,
+          0.1647,
+          0.1725
+        ],
+        "Brightness": 0,
+        "ClockTime": 0,
+        "EnvironmentDiffuseScale": 0.25,
+        "EnvironmentSpecularScale": 0.5,
+        "ExposureCompensation": 0.35,
+        "GlobalShadows": true,
+        "ShadowSoftness": 0.25
+      },
+      "Grade": {
+        "$className": "ColorCorrectionEffect",
+        "$properties": {
+          "Brightness": 0.02,
+          "Contrast": 0.14,
+          "Saturation": -0.28,
+          "TintColor": [
+            0.949,
+            0.9725,
+            0.9255
+          ]
+        }
+      },
+      "Bloom": {
+        "$className": "BloomEffect",
+        "$properties": {
+          "Intensity": 0.55,
+          "Size": 28,
+          "Threshold": 1.4
+        }
+      },
+      "Haze": {
+        "$className": "Atmosphere",
+        "$properties": {
+          "Density": 0.3,
+          "Offset": 0,
+          "Color": [
+            0.3765,
+            0.3843,
+            0.3608
+          ],
+          "Decay": [
+            0.2353,
+            0.2275,
+            0.2039
+          ],
+          "Glare": 0,
+          "Haze": 1.4
+        }
+      }
+    }
   }
 }

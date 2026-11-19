@@ -14,14 +14,17 @@ export type Session = {
 	character: Model,
 	humanoid: Humanoid,
 	movement: string,
-	weapon: any?, -- owned by WeaponService
+	body: any?, -- stance state, owned by MovementService
+	weapon: any?, -- equipped weapon, owned by WeaponService
+	weapons: any?, -- every loadout weapon's state for this life, owned by WeaponService
 	budget: number,
 	budgetTime: number,
 }
 
 -- Token bucket shared by all client requests: bursts of BUCKET_SIZE, refilling at REFILL_PER_SECOND.
-local BUCKET_SIZE = 24
-local REFILL_PER_SECOND = 16
+-- Sized for the fastest automatic (PDW, 13.3 shots/s) plus stance/aim requests on top.
+local BUCKET_SIZE = 30
+local REFILL_PER_SECOND = 20
 local HUMANOID_TIMEOUT = 10
 
 local PlayerSessions = {}
@@ -76,7 +79,9 @@ local function start(player: Player, character: Model)
 		character = character,
 		humanoid = humanoid,
 		movement = "Walk",
+		body = nil,
 		weapon = nil,
+		weapons = nil,
 		budget = BUCKET_SIZE,
 		budgetTime = os.clock(),
 	}

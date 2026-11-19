@@ -6,12 +6,18 @@
 	  Fire(aim: Vector3)            unit camera look vector; server picks origin, spread, hit, damage
 	  Reload()
 	  SelectAmmo(ammoId: string)    must belong to the equipped weapon's caliber
-	  SetMovement(mode: string)     must be a key of Movement.speed
+	  SetMovement(seq: number, stance: string, aiming: boolean, sprinting: boolean)
+	                                stance must be a key of Movement.stance; the server may refuse
+	                                the stance change (too soon, no headroom)
 	  RequestSync()                 asks for a fresh WeaponState
+	  EquipWeapon(slot: number)     index into Loadout.weapons
 
 	Server -> Client
 	  WeaponState(state: WeaponState)
-	  ShotResult(result: ShotResult)
+	  ShotResult(result: ShotResult)        to the shooter only
+	  ShotFx(fx: ShotFx)                    to every other player: cosmetic sound/tracer/impact
+	  MovementState(seq: number, stance: string)   answer to every SetMovement: the stance the
+	                                server actually holds after that request
 ]]
 
 export type WeaponState = {
@@ -29,6 +35,8 @@ export type ShotResult = {
 	surface: "Miss" | "World" | "Target",
 	ammoId: string,
 	distance: number,
+	normal: Vector3?, -- surface normal when something was hit
+	impact: "Miss" | "World" | "Flesh" | "Armor", -- which impact effect to show
 	-- The fields below are only set when surface == "Target".
 	targetName: string?,
 	zone: string?,
@@ -43,6 +51,16 @@ export type ShotResult = {
 	maxHealth: number?,
 }
 
+-- Another player's shot, for sound and visuals only. No damage information.
+export type ShotFx = {
+	shooter: Player,
+	weaponId: string,
+	origin: Vector3,
+	endpoint: Vector3,
+	normal: Vector3?,
+	impact: "Miss" | "World" | "Flesh" | "Armor",
+}
+
 local Net = {}
 
 Net.names = table.freeze({
@@ -53,6 +71,9 @@ Net.names = table.freeze({
 	"RequestSync",
 	"WeaponState",
 	"ShotResult",
+	"MovementState",
+	"EquipWeapon",
+	"ShotFx",
 })
 
 local FOLDER_NAME = "Remotes"
