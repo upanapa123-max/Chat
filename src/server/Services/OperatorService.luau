@@ -6,15 +6,18 @@
 	  - Gear parts (helmet with NVG mount and ear pro, plate carrier, pouches, gloves, knee pads,
 	    boots) are welded on. They are Massless, CanCollide/CanQuery/CanTouch false, so they never
 	    change movement or hit detection.
+	  - Helmet and plate carrier come from Visual/ArmorModels (the same pieces the range dummies
+	    wear), plus a balaclava, eye protection, radio, belt kit, holstered sidearm and pack.
 	  - The equipped weapon (character attribute "EquippedWeapon", set by WeaponService) is built
-	    from Visual/WeaponModels and welded to the upper torso in a shouldered position, with the
-	    arms posed forward to hold it.
+	    from Visual/WeaponModels and welded to the upper torso in a shouldered position. On R15,
+	    IKControls put the right hand on the grip and the left hand on the handguard, so the arms
+	    hold the gun on every client while walk/stance animations play underneath.
 
 	Works with R15 and R6 rigs. In first person, Roblox already hides your own character's parts,
 	so this gear never blocks your view.
 
-	Known limit: the arm pose is a static Motor6D offset; walk animations still swing the arms a
-	little. Proper hold/aim animations need Animation assets uploaded to your account.
+	Known limit: the gun doesn't pitch with where the player looks (the server doesn't know the
+	camera). R6 avatars get a static shoulder pose instead of IK.
 ]]
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -22,6 +25,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local shared = ReplicatedStorage:WaitForChild("LastShift")
 local Weapons = require(shared:WaitForChild("Data"):WaitForChild("Weapons"))
 local WeaponModels = require(shared:WaitForChild("Visual"):WaitForChild("WeaponModels"))
+local ArmorModels = require(shared:WaitForChild("Visual"):WaitForChild("ArmorModels"))
 
 local PlayerSessions = require(script.Parent.PlayerSessions)
 
@@ -35,7 +39,8 @@ local GEAR = Color3.fromRGB(86, 82, 64)
 local GEAR_DARK = Color3.fromRGB(58, 56, 46)
 local BLACK = Color3.fromRGB(28, 28, 28)
 local BOOT = Color3.fromRGB(52, 42, 34)
-local HELMET = Color3.fromRGB(92, 88, 70)
+local BALACLAVA = Color3.fromRGB(38, 38, 36)
+local LENS = Color3.fromRGB(40, 46, 50)
 
 local OperatorService = {}
 
@@ -74,13 +79,6 @@ local function gearPart(folder: Instance, anchor: BasePart, name: string, size: 
 	return part
 end
 
--- Ellipsoid via a Sphere SpecialMesh (the part's box doesn't matter: CanQuery is off).
-local function ellipsoid(part: Part)
-	local mesh = Instance.new("SpecialMesh")
-	mesh.MeshType = Enum.MeshType.Sphere
-	mesh.Parent = part
-end
-
 local function stripAvatar(character: Model)
 	for _, child in character:GetChildren() do
 		if child:IsA("Accessory") or child:IsA("Shirt") or child:IsA("Pants") or child:IsA("ShirtGraphic") then
@@ -97,6 +95,15 @@ local function stripAvatar(character: Model)
 	colors.RightArmColor3 = SHIRT
 	colors.LeftLegColor3 = PANTS
 	colors.RightLegColor3 = PANTS
+	colors.HeadColor3 = BALACLAVA
+	local head = character:FindFirstChild("Head")
+	if head then
+		for _, child in head:GetChildren() do
+			if child:IsA("Decal") then
+				child:Destroy()
+			end
+		end
+	end
 end
 
 local function dress(character: Model)
@@ -111,42 +118,50 @@ local function dress(character: Model)
 	local torso = find(character, "UpperTorso", "Torso")
 	local lowerTorso = find(character, "LowerTorso", "Torso")
 
+	local cosmetic = { parent = folder, hittable = false, anchored = false }
 	if head then
 		local s = head.Size
-		local dome = gearPart(folder, head, "Helmet", Vector3.new(s.X * 1.32, s.Y * 0.95, s.Z * 1.42), CFrame.new(0, s.Y * 0.22, 0.02), HELMET, Enum.Material.Fabric)
-		ellipsoid(dome)
-		gearPart(folder, head, "Helmet rim", Vector3.new(s.X * 1.3, s.Y * 0.1, s.Z * 1.36), CFrame.new(0, s.Y * 0.02, 0.03), GEAR_DARK, Enum.Material.Plastic)
-		gearPart(folder, head, "NVG shroud", Vector3.new(s.X * 0.32, s.Y * 0.22, s.Z * 0.12), CFrame.new(0, s.Y * 0.42, -s.Z * 0.7), BLACK, Enum.Material.Metal)
-		gearPart(folder, head, "Rail L", Vector3.new(s.X * 0.08, s.Y * 0.16, s.Z * 0.8), CFrame.new(-s.X * 0.64, s.Y * 0.18, 0), BLACK, Enum.Material.Plastic)
-		gearPart(folder, head, "Rail R", Vector3.new(s.X * 0.08, s.Y * 0.16, s.Z * 0.8), CFrame.new(s.X * 0.64, s.Y * 0.18, 0), BLACK, Enum.Material.Plastic)
-		gearPart(folder, head, "Ear cup L", Vector3.new(s.X * 0.16, s.Y * 0.42, s.Y * 0.42), CFrame.new(-s.X * 0.58, -s.Y * 0.05, 0.02), BLACK, Enum.Material.Plastic, Enum.PartType.Cylinder)
-		gearPart(folder, head, "Ear cup R", Vector3.new(s.X * 0.16, s.Y * 0.42, s.Y * 0.42), CFrame.new(s.X * 0.58, -s.Y * 0.05, 0.02), BLACK, Enum.Material.Plastic, Enum.PartType.Cylinder)
-		gearPart(folder, head, "Counterweight", Vector3.new(s.X * 0.4, s.Y * 0.22, s.Z * 0.14), CFrame.new(0, s.Y * 0.25, s.Z * 0.7), GEAR_DARK, Enum.Material.Fabric)
+		ArmorModels.build("MidHelmet", head, "Head", cosmetic)
+		local lens = gearPart(folder, head, "Eye pro", Vector3.new(s.X * 0.92, s.Y * 0.2, 0.06), CFrame.new(0, s.Y * 0.08, -s.Z * 0.53), LENS, Enum.Material.Glass)
+		lens.Transparency = 0.15
+		lens.Reflectance = 0.3
+		gearPart(folder, head, "Eye pro frame", Vector3.new(s.X * 0.96, s.Y * 0.05, 0.07), CFrame.new(0, s.Y * 0.19, -s.Z * 0.53), BLACK, Enum.Material.Plastic)
 	end
 
 	if torso then
 		local s = torso.Size
-		local plateH = s.Y * (if torso.Name == "Torso" then 0.72 else 0.9)
-		local plateY = if torso.Name == "Torso" then s.Y * 0.08 else 0
-		gearPart(folder, torso, "Front plate", Vector3.new(s.X * 0.86, plateH, 0.32), CFrame.new(0, plateY, -s.Z / 2 - 0.12), GEAR, Enum.Material.Fabric)
-		gearPart(folder, torso, "Back plate", Vector3.new(s.X * 0.86, plateH, 0.3), CFrame.new(0, plateY, s.Z / 2 + 0.11), GEAR, Enum.Material.Fabric)
-		gearPart(folder, torso, "Cummerbund L", Vector3.new(0.18, plateH * 0.7, s.Z + 0.3), CFrame.new(-s.X * 0.42, plateY - plateH * 0.12, 0), GEAR_DARK, Enum.Material.Fabric)
-		gearPart(folder, torso, "Cummerbund R", Vector3.new(0.18, plateH * 0.7, s.Z + 0.3), CFrame.new(s.X * 0.42, plateY - plateH * 0.12, 0), GEAR_DARK, Enum.Material.Fabric)
-		gearPart(folder, torso, "Shoulder strap L", Vector3.new(s.X * 0.18, 0.12, s.Z + 0.5), CFrame.new(-s.X * 0.28, plateY + plateH / 2, 0), GEAR_DARK, Enum.Material.Fabric)
-		gearPart(folder, torso, "Shoulder strap R", Vector3.new(s.X * 0.18, 0.12, s.Z + 0.5), CFrame.new(s.X * 0.28, plateY + plateH / 2, 0), GEAR_DARK, Enum.Material.Fabric)
-		for i = -1, 1 do
-			gearPart(folder, torso, "Mag pouch", Vector3.new(s.X * 0.22, plateH * 0.42, 0.26), CFrame.new(i * s.X * 0.25, plateY - plateH * 0.22, -s.Z / 2 - 0.38), GEAR_DARK, Enum.Material.Fabric)
-			gearPart(folder, torso, "Mag in pouch", Vector3.new(s.X * 0.16, plateH * 0.14, 0.16), CFrame.new(i * s.X * 0.25, plateY + plateH * 0.04, -s.Z / 2 - 0.38), BLACK, Enum.Material.Plastic)
-		end
-		gearPart(folder, torso, "Radio", Vector3.new(0.3, plateH * 0.5, 0.22), CFrame.new(-s.X * 0.3, plateY + plateH * 0.15, s.Z / 2 + 0.36), BLACK, Enum.Material.Plastic)
-		gearPart(folder, torso, "Antenna", Vector3.new(0.05, plateH * 0.9, 0.05), CFrame.new(-s.X * 0.36, plateY + plateH * 0.75, s.Z / 2 + 0.36), BLACK, Enum.Material.Rubber)
-		gearPart(folder, torso, "Admin pouch", Vector3.new(s.X * 0.4, plateH * 0.25, 0.14), CFrame.new(s.X * 0.1, plateY + plateH * 0.28, -s.Z / 2 - 0.33), GEAR, Enum.Material.Fabric)
+		ArmorModels.build("PlateCarrier", torso, "Torso", cosmetic)
+		gearPart(folder, torso, "Radio", Vector3.new(0.3, s.Y * 0.42, 0.22), CFrame.new(-s.X * 0.3, s.Y * 0.12, s.Z / 2 + 0.5), BLACK, Enum.Material.Plastic)
+		gearPart(folder, torso, "Antenna", Vector3.new(0.05, s.Y * 0.8, 0.05), CFrame.new(-s.X * 0.36, s.Y * 0.7, s.Z / 2 + 0.5), BLACK, Enum.Material.Rubber)
+		gearPart(folder, torso, "Assault pack", Vector3.new(s.X * 0.62, s.Y * 0.7, 0.45), CFrame.new(s.X * 0.08, -s.Y * 0.05, s.Z / 2 + 0.62), GEAR_DARK, Enum.Material.Fabric)
+		gearPart(folder, torso, "Pack top", Vector3.new(s.X * 0.58, 0.14, 0.5), CFrame.new(s.X * 0.08, s.Y * 0.32, s.Z / 2 + 0.62), GEAR, Enum.Material.Fabric)
+		gearPart(folder, torso, "Flag patch", Vector3.new(s.X * 0.22, s.Y * 0.14, 0.03), CFrame.new(s.X * 0.08, s.Y * 0.18, s.Z / 2 + 0.86), Color3.fromRGB(70, 60, 44), Enum.Material.Fabric)
 	end
 
 	if lowerTorso and lowerTorso ~= torso then
 		local s = lowerTorso.Size
 		gearPart(folder, lowerTorso, "Belt", Vector3.new(s.X * 1.08, s.Y * 0.45, s.Z * 1.12), CFrame.new(0, s.Y * 0.1, 0), GEAR_DARK, Enum.Material.Fabric)
-		gearPart(folder, lowerTorso, "Holster", Vector3.new(0.28, s.Y * 1.2, 0.5), CFrame.new(s.X * 0.62, -s.Y * 0.3, 0), BLACK, Enum.Material.Plastic)
+		local holster = gearPart(folder, lowerTorso, "Holster", Vector3.new(0.28, s.Y * 1.2, 0.5), CFrame.new(s.X * 0.62, -s.Y * 0.3, 0), BLACK, Enum.Material.Plastic)
+		local sidearm = WeaponModels.build("HandCannon")
+		sidearm.model.Name = "Sidearm"
+		sidearm.model:ScaleTo(1.1)
+		sidearm.model:PivotTo(holster.CFrame * CFrame.new(0.02, s.Y * 0.35, 0) * CFrame.Angles(math.rad(-90), 0, 0))
+		for _, part in sidearm.model:GetDescendants() do
+			if part:IsA("BasePart") then
+				part.CanCollide = false
+				part.CanQuery = false
+				part.CanTouch = false
+				part.Massless = true
+				if part:GetAttribute("Group") == "Flash" then
+					part.Transparency = 1
+				end
+				local weld = Instance.new("WeldConstraint")
+				weld.Part0 = holster
+				weld.Part1 = part
+				weld.Parent = part
+			end
+		end
+		sidearm.model.Parent = folder
 		gearPart(folder, lowerTorso, "IFAK", Vector3.new(0.4, s.Y * 0.7, 0.3), CFrame.new(-s.X * 0.2, 0, s.Z * 0.62), Color3.fromRGB(120, 40, 34), Enum.Material.Fabric)
 	end
 
@@ -210,6 +225,52 @@ local function poseArms(character: Model)
 	character:SetAttribute("LastShiftArmsPosed", true)
 end
 
+-- Right hand to the grip, left hand to the support point, elbows down and out.
+local function holdWithIK(character: Model, built): boolean
+	local humanoid = character:FindFirstChildOfClass("Humanoid")
+	local torso = find(character, "UpperTorso")
+	if not humanoid or humanoid.RigType ~= Enum.HumanoidRigType.R15 or not torso then
+		return false
+	end
+	for _, child in humanoid:GetChildren() do
+		if child:IsA("IKControl") and string.sub(child.Name, 1, 9) == "LastShift" then
+			child:Destroy()
+		end
+	end
+	local s = torso.Size
+	local function pole(name: string, position: Vector3): Attachment
+		local existing = torso:FindFirstChild(name)
+		if existing and existing:IsA("Attachment") then
+			return existing
+		end
+		local a = Instance.new("Attachment")
+		a.Name = name
+		a.Position = position
+		a.Parent = torso
+		return a
+	end
+	local function ik(name: string, rootName: string, handName: string, target: Attachment, poleAttachment: Attachment)
+		local root = find(character, rootName)
+		local hand = find(character, handName)
+		if not root or not hand then
+			return
+		end
+		local control = Instance.new("IKControl")
+		control.Name = name
+		control.Type = Enum.IKControlType.Position
+		control.ChainRoot = root
+		control.EndEffector = hand
+		control.Target = target
+		control.Pole = poleAttachment
+		control.SmoothTime = 0.06
+		control.Weight = 1
+		control.Parent = humanoid
+	end
+	ik("LastShiftRightArm", "RightUpperArm", "RightHand", WeaponModels.attachment(built, "Grip"), pole("LastShiftPoleR", Vector3.new(s.X * 1.6, -s.Y * 1.4, 0.4)))
+	ik("LastShiftLeftArm", "LeftUpperArm", "LeftHand", WeaponModels.attachment(built, "Support"), pole("LastShiftPoleL", Vector3.new(-s.X * 1.6, -s.Y * 1.6, -0.2)))
+	return true
+end
+
 local function showWeapon(character: Model)
 	local old = character:FindFirstChild("LastShiftWorldWeapon")
 	if old then
@@ -252,7 +313,9 @@ local function showWeapon(character: Model)
 	weld.Part1 = built.root
 	weld.Parent = built.root
 	model.Parent = character
-	poseArms(character)
+	if not holdWithIK(character, built) then
+		poseArms(character)
+	end
 end
 
 local function setup(session: PlayerSessions.Session)

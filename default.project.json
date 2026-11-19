@@ -84,6 +84,12 @@
           "Haze": 1.4
         }
       }
+    },
+    "MaterialService": {
+      "$className": "MaterialService",
+      "$properties": {
+        "Use2022Materials": true
+      }
     }
   }
 }

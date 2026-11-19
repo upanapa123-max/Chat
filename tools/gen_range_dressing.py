@@ -198,21 +198,34 @@ line.add("Range light", part((0.8, 0.5, 0.3), (0, 12.3, -5.9), rgb(255, 40, 30),
 line.add("Rule sign", sign("CEASE FIRE ON RED LIGHT   ·   EYE AND EAR PROTECTION", (16, 1.2, 0.15),
                             (0, 10.6, -5.6), rot=rot_y(180), face="Front"))
 
-# --- Target stands (cosmetic, behind the dummies) ------------------------------------------------
-stands = root.folder("TargetStands")
-for tx, tz in ((-12, -35), (0, -49), (13, -65), (-15, -112)):
-    stands.add("Stand base", part((3, 0.25, 2), (tx, 0.125, tz - 0.4), STEEL_DARK, "DiamondPlate"))
-    stands.add("Stand post", part((0.3, 6.2, 0.3), (tx, 3.1, tz - 1.1), STEEL, "Metal"))
-    stands.add("Stand arm", part((2.2, 0.25, 0.25), (tx, 6.1, tz - 1.1), STEEL, "Metal"))
-    stands.add("Lane spot", part((1.0, 0.4, 1.0), (tx, 13.2, tz + 3), BLACK, "Metal", collide=False, query=False,
-                                 children={"SpotLight": {"$className": "SpotLight",
-                                                         "$properties": {"Face": "Bottom", "Angle": 38,
-                                                                         "Brightness": 3.2, "Range": 18,
-                                                                         "Shadows": True,
-                                                                         "Color": rgb(255, 236, 205)}}}))
-    # Floor scuffs where the stand has been dragged around.
-    stands.add("Scuff", part((4.5, 0.02, 3), (tx + random.uniform(-0.5, 0.5), 0.011, tz - 0.3), GRIME, "Concrete",
-                             collide=False, query=False, transparency=0.55, shadow=False))
+# --- Stations (RangeService adds the prompts; HitFeedback draws the board) -----------------------
+stations = root.folder("Stations")
+stations.add("Console desk", part((3.6, 2.7, 1.5), (5, 1.35, -3.4), STEEL_DARK, "Metal"))
+stations.children["RangeConsole"] = part((3.4, 0.25, 1.3), (5, 2.83, -3.4), BLACK, "Metal")
+stations.add("Console lamp", part((0.3, 0.2, 0.3), (6.5, 3.05, -3.9), rgb(120, 230, 160), "Neon", collide=False,
+                                  query=False, children={"PointLight": {"$className": "PointLight", "$properties": {
+                                      "Color": rgb(120, 230, 160), "Brightness": 0.8, "Range": 6}}}))
+stations.children["AmmoCrate"] = part((2.6, 1.6, 1.5), (-5, 0.8, 1.2), OLIVE, "Metal")
+stations.add("Crate lid", part((2.7, 0.18, 1.6), (-5, 1.68, 1.2), rgb(60, 64, 46), "Metal"))
+stations.add("Crate stencil", sign("7.62 / 5.56 / 4.6 / .50", (2.4, 0.5, 0.05), (-5, 0.9, 0.42),
+                                    color=rgb(220, 210, 170), back=OLIVE))
+stations.children["WeaponRack"] = part((3.4, 5.2, 0.4), (9, 3.4, 8), WOOD, "WoodPlanks")
+stations.add("Rack frame", part((3.8, 0.3, 0.6), (9, 0.9, 8), STEEL_DARK, "Metal"))
+stations.add("Rack sign", sign("ARMORY", (3.4, 0.7, 0.1), (9, 6.4, 7.75), rot=rot_y(180)))
+stations.children["StatsBoard"] = part((10, 3.4, 0.25), (0, 8.7, -6.8), BLACK, "Metal")
+stations.add("Board chain L", part((0.08, 3.2, 0.08), (-4.6, 12, -6.8), STEEL_DARK, "Metal", collide=False))
+stations.add("Board chain R", part((0.08, 3.2, 0.08), (4.6, 12, -6.8), STEEL_DARK, "Metal", collide=False))
+
+# --- Range shell detail: mats, acoustic panels, ceiling baffles -----------------------------------
+detail = root.folder("Detail")
+detail.add("Firing mat", part((62, 0.06, 4.2), (0, 0.03, -3.4), rgb(22, 22, 22), "Rubber", collide=False))
+detail.add("Walkway", part((40, 0.05, 6), (0, 0.03, 8), STEEL_DARK, "DiamondPlate", collide=False))
+for z in range(10, -14, -4):
+    for x in (-37.15, 37.15):
+        detail.add("Acoustic panel", part((0.3, 4.2, 3.6), (x, 6.2, z), rgb(46, 48, 50), "Fabric"))
+for z in (-10, -36, -64, -96, -124):  # between lamps and ceiling beams
+    detail.add("Ceiling baffle", part((74, 2.4, 0.4), (0, 12.1, z), rgb(70, 66, 58), "DiamondPlate",
+                                      rot=rot_x(35)))
 
 # --- Props -----------------------------------------------------------------------------------
 props = root.folder("Props")
@@ -268,6 +281,9 @@ for z in LAMP_Z:
                                          "SpotLight": {"$className": "SpotLight",
                                                        "$properties": {"Face": "Bottom", "Angle": 110, "Brightness": 2.4,
                                                                        "Range": 34, "Shadows": True, "Color": warm}}}))
+        lamps.add("Light shaft", part((9, 3.4, 3.4), (x, 6.6, z), rgb(255, 214, 160), "Neon", rot=UPRIGHT,
+                                      shape="Cylinder", collide=False, query=False, transparency=0.965,
+                                      shadow=False))
         lamps.add("Lamp bulb", part((0.7, 0.7, 0.7), (x, 11.0, z), rgb(255, 214, 160), "Neon", shape="Ball",
                                     collide=False, query=False, shadow=False, extra=attrs))
 

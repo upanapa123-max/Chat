@@ -144,7 +144,7 @@ local function fire(session: PlayerSessions.Session, aim: unknown)
 				shot[key] = value
 			end
 			shot.surface = "Target"
-			shot.impact = if report.armor == "Stopped" then "Armor" else "Flesh"
+			shot.impact = TargetService.impactKind(model, report)
 		else
 			shot.surface = "World"
 			shot.impact = "World"
@@ -209,11 +209,7 @@ local function selectAmmo(session: PlayerSessions.Session, ammoId: unknown)
 	end
 end
 
-local function equip(session: PlayerSessions.Session, slot: unknown)
-	if typeof(slot) ~= "number" or slot ~= slot or slot % 1 ~= 0 then
-		return
-	end
-	local weaponId = Loadout.weapons[slot]
+local function equipId(session: PlayerSessions.Session, weaponId: string?)
 	local target = weaponId and session.weapons[weaponId]
 	local current: WeaponState = session.weapon
 	if not target or target == current then
@@ -230,6 +226,13 @@ local function equip(session: PlayerSessions.Session, slot: unknown)
 	publish(session)
 end
 
+local function equip(session: PlayerSessions.Session, slot: unknown)
+	if typeof(slot) ~= "number" or slot ~= slot or slot % 1 ~= 0 then
+		return
+	end
+	equipId(session, Loadout.weapons[slot])
+end
+
 -- Wraps a handler so it only runs for a gated session that has a weapon.
 local function armed(handler: (PlayerSessions.Session, ...any) -> ())
 	return function(player: Player, ...)
@@ -238,6 +241,26 @@ local function armed(handler: (PlayerSessions.Session, ...any) -> ())
 			handler(session, ...)
 		end
 	end
+end
+
+-- Range weapon rack (RangeService has already gated the player).
+function WeaponService.equipById(session: PlayerSessions.Session, weaponId: string)
+	if session.weapons and table.find(Loadout.weapons, weaponId) then
+		equipId(session, weaponId)
+	end
+end
+
+-- Range ammo crate: every weapon's reserves back to their starting amount. Magazines are kept.
+function WeaponService.refill(session: PlayerSessions.Session)
+	if not session.weapons then
+		return
+	end
+	for _, weapon: WeaponState in session.weapons do
+		for ammoId in weapon.reserve do
+			weapon.reserve[ammoId] = math.max(weapon.reserve[ammoId], weapon.def.startingReserve)
+		end
+	end
+	publish(session)
 end
 
 function WeaponService.init(remoteTable: { [string]: RemoteEvent })

@@ -25,16 +25,20 @@ local Viewmodel = require(views:WaitForChild("Viewmodel"))
 local DebugHud = require(views:WaitForChild("DebugHud"))
 local SoundPlayer = require(views:WaitForChild("SoundPlayer"))
 local Effects = require(views:WaitForChild("Effects"))
+local HitFeedback = require(views:WaitForChild("HitFeedback"))
+local StanceSounds = require(views:WaitForChild("StanceSounds"))
 
 local remotes = Net.waitFor(shared)
 local weaponDef = Weapons[Loadout.startingWeapon]
 
 SoundPlayer.init()
 Effects.init()
+StanceSounds.init() -- after SoundPlayer: uses its Foley group
 
 local character = CharacterController.new(remotes)
 local viewmodel = Viewmodel.new()
 local hud = DebugHud.new(player, weaponDef)
+local feedback = HitFeedback.new(player:WaitForChild("PlayerGui"))
 local weapon = WeaponController.new(remotes, weaponDef, character, viewmodel, hud, Effects)
 
 player.CameraMode = Enum.CameraMode.LockFirstPerson
@@ -62,6 +66,7 @@ end)
 
 remotes.ShotResult.OnClientEvent:Connect(function(result)
 	weapon:onShot(result)
+	feedback:onShot(result)
 end)
 
 remotes.ShotFx.OnClientEvent:Connect(function(fx)

@@ -16,6 +16,7 @@ local TargetService = require(services:WaitForChild("TargetService"))
 local MovementService = require(services:WaitForChild("MovementService"))
 local WeaponService = require(services:WaitForChild("WeaponService"))
 local OperatorService = require(services:WaitForChild("OperatorService"))
+local RangeService = require(services:WaitForChild("RangeService"))
 
 local remotes = Net.create(shared)
 
@@ -23,4 +24,5 @@ TargetService.init()
 MovementService.init(remotes)
 WeaponService.init(remotes)
 OperatorService.init()
+RangeService.init()
 PlayerSessions.init()
